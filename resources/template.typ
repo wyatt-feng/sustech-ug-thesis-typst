@@ -401,7 +401,7 @@
   set list(indent: 2em)
   set enum(indent: 2em)
 
-  show strong: it => text(font: 字体.黑体, weight: "semibold", it.body)
+  show strong: it => text(font: 字体.黑体, weight: "bold", it.body)
   show emph: it => text(font: 字体.楷体, style: "italic", it.body)
   show par: set block(spacing: linespacing)
   show raw: set text(font: 字体.代码)
