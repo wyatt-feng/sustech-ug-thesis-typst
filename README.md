@@ -1,6 +1,6 @@
-# PKUTHSS-Typst
+# Typst Template for Undergraduate Thesis of SUSTech.
 
-Typst template for dissertations in Peking University (PKU).
+Do not use at the moment! Still under heavy development.
 
 ![PKUTHSS-Typst](./images/cover.png)
 
