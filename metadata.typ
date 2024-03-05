@@ -1,4 +1,4 @@
-#import "template.typ": *
+#import "resources/template.typ": *
 #let meta = conf.with(
   class: "",
   serialnumber: "",

@@ -123,13 +123,13 @@ Typst 中的标题使用 `=` 表示，其后跟着标题的内容。`=` 的数�
   ],
   ```typ
 #figure(
-  image("images/1-writing-app.png", width: 100%),
+  image("resources/images/1-writing-app.png", width: 100%),
   caption: "Typst 网页版界面",
 ) <web>
 ```,
 [
   #figure(
-  image("images/1-writing-app.png", width: 100%),
+  image("resources/images/1-writing-app.png", width: 100%),
   caption: "Typst 网页版界面",
 ) <web>
 ]
@@ -450,7 +450,7 @@ $ lim_x =
 附录中也可以插入图片，如 @web1。
 
 #figure(
-  image("images/1-writing-app.png", width: 100%),
+  image("resources/images/1-writing-app.png", width: 100%),
   caption: "Typst 网页版界面",
 ) <web1>
 

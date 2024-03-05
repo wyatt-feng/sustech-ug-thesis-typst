@@ -567,7 +567,7 @@
     grid(
       columns: (auto, auto),
       gutter: 0.4em,
-      image("sustech-cn.svg", height: 4.8em, fit: "contain"),
+      image("images/sustech-cn.svg", height: 4.8em, fit: "contain"),
     )
   )
   linebreak()
