@@ -21,7 +21,7 @@
   ckeywords: ("Typst", "模板"),
   eabstract: "This document introduces the features of the sustech-ug-thesis-typst template.",
   ekeywords: ("Typst", "Template"),
-  acknowledgements: [感谢 Typst 开发者的辛勤付出。 #lorem(300)],
+  acknowledgements: [感谢 Typst 开发者的辛勤付出。],
   linespacing: 1.5em,
   outlinedepth: 3,
   blind: false,
@@ -466,7 +466,7 @@ $ lim_x =
 
 在 @theory1 中，我们回顾了 @intro 中的公式。下面，我们来推导一些新的公式：
 
-#lorem(1000)
+#lorem(100)
 
 = 展望
 
@@ -567,15 +567,9 @@ $ vec(overline(underbracket(underline(1 + 2) + overbrace(3 + dots.c + 10, "large
 
 == Typst 的开发者 <developers>
 
-#lorem(1000)
+#lorem(100)
 
-= 关于 PKUTHSS <pkuthss>
-
-#lorem(1000)
-
-= 更新日志 <changelog>
-
-#include "changelog.typ"
+#include "sample-section.typ"
 
 #pagebreak()
 #bibliography("ref.bib",
