@@ -23,6 +23,7 @@
   宋体: ("Times New Roman", "Source Han Serif"),
   黑体: ("Times New Roman", "Source Han Sans"),
   楷体: ("Times New Roman", "KaiTi"),
+  英文: ("Times New Roman"),
   代码: ("New Computer Modern Mono", "Times New Roman", "SimSun"),
 )
 
@@ -36,9 +37,14 @@
 #let tablecounter = counter(figure.where(kind: table))
 #let equationcounter = counter(math.equation)
 #let appendix() = {
+  align(center)[#heading(numbering: none, "附录")]
   appendixcounter.update(10)
-  chaptercounter.update(0)
-  counter(heading).update(0)
+  chaptercounter.update(1)
+  counter(heading).update(1)
+}
+#let biblio(path) = {
+  align(center)[#heading(numbering: none, "参考文献")]
+  bibliography(path, title: none, style: "ieee")
 }
 #let skippedstate = state("skipped", false)
 
@@ -138,61 +144,40 @@
 }
 
 #let chineseoutline(title: "目录", depth: none, indent: false) = {
-  heading(title, numbering: none, outlined: false)
+  align(center)[#text(font: 字体.黑体, size: 字号.小二, weight: "bold", title)]
   locate(it => {
     let elements = query(heading.where(outlined: true).after(it), it)
 
     for el in elements {
-      // Skip list of images and list of tables
-      if partcounter.at(el.location()).first() < 20 and el.numbering == none { continue }
-
       // Skip headings that are too deep
       if depth != none and el.level > depth { continue }
 
       let maybe_number = if el.numbering != none {
-        if el.numbering == chinesenumbering {
-          chinesenumbering(..counter(heading).at(el.location()), location: el.location())
-        } else {
-          numbering(el.numbering, ..counter(heading).at(el.location()))
-        }
+        numbering(el.numbering, ..counter(heading).at(el.location()))
         h(0.5em)
       }
 
       let line = {
-        if indent {
-          h(1em * (el.level - 1 ))
-        }
-
-        if el.level == 1 {
-          v(0.5em, weak: true)
-        }
-
         if maybe_number != none {
           style(styles => {
             let width = measure(maybe_number, styles).width
             box(
               width: lengthceil(width),
-              link(el.location(), if el.level == 1 {
-                strong(maybe_number)
-              } else {
-                maybe_number
-              })
+              maybe_number
             )
           })
         }
 
         link(el.location(), if el.level == 1 {
-          strong(el.body)
+          set text(font: 字体.宋体, size: 字号.四号, weight: "bold")
+          el.body
         } else {
+          set text(font: 字体.宋体, size: 字号.四号, weight: "regular")
           el.body
         })
 
         // Filler dots
-        if el.level == 1 {
-          box(width: 1fr, h(10pt) + box(width: 1fr) + h(10pt))
-        } else {
-          box(width: 1fr, h(10pt) + box(width: 1fr, repeat[.]) + h(10pt))
-        }
+        box(width: 1fr, h(10pt) + box(width: 1fr, repeat[.]) + h(10pt))
 
         // Page number
         let footer = query(selector(<__footer__>).after(el.location()), el.location())
@@ -203,7 +188,8 @@
         }
         
         link(el.location(), if el.level == 1 {
-          strong(str(page_number))
+          set text(font: 字体.宋体, size: 字号.四号, weight: "bold")
+          str(page_number)
         } else {
           str(page_number)
         })
@@ -345,12 +331,12 @@
   cthesisname: "本科生毕业设计（论文）",
   cheader: "",
   ctitle: "",
+  csubtitle: "",
   etitle: "",
-  school: "",
-  cfirstmajor: "",
-  cmajor: "计算机科学与技术",
-  emajor: "Some Major",
-  direction: "某个研究方向",
+  esubtitle: "",
+  department: "",
+  cmajor: "",
+  emajor: "",
   csupervisor: "",
   esupervisor: "",
   date: "某某某某年某某月某某日",
@@ -375,17 +361,14 @@
       [
         #set text(字号.五号)
         #set align(center)
-        #if query(selector(heading).before(loc), loc).len() < 2 or query(selector(heading).after(loc), loc).len() == 0 {
-          // Skip cover, copyright and origin pages
+        #let heading_count = query(selector(heading).before(loc), loc).len()
+        #if heading_count < 2 {
+          // Skip the cover, the abstract, and the toc
+          counter(page).update(0)
         } else {
-          let headers = query(selector(heading).before(loc), loc)
-          let part = partcounter.at(headers.last().location()).first()
+          let current_page = counter(page).at(loc).first()
           [
-            #if part < 20 {
-              numbering("I", counter(page).at(loc).first())
-            } else {
-              str(counter(page).at(loc).first())
-            }
+            #str(current_page)
           ]
         }
         #label("__footer__")
@@ -395,7 +378,7 @@
 
   set text(字号.二号, font: 字体.黑体, lang: "zh")
   set align(center + horizon)
-  set heading(numbering: chinesenumbering)
+  set heading(numbering: numbering("1.1", 1, 1, 1))
   set figure(
     numbering: (..nums) => locate(loc => {
       if appendixcounter.at(loc).first() < 10 {
@@ -439,16 +422,13 @@
     ]
 
     #if it.level == 1 {
-      if it.numbering != none {
-        chaptercounter.step()
-      }
+      chaptercounter.step()
       footnotecounter.update(())
       imagecounter.update(())
       tablecounter.update(())
       rawcounter.update(())
       equationcounter.update(())
 
-      set align(center)
       sizedheading(it, 字号.三号)
     } else {
       if it.level == 2 {
@@ -599,13 +579,13 @@
     columns: (80pt, 280pt),
     row-gutter: 1.5em,
     fieldname(text("题") + h(2em) + text("目：")),
-    chineseunderline(ctitle),
+    chineseunderline(ctitle + "\n" + csubtitle),
     fieldname(text("姓") + h(2em) + text("名：")),
     fieldvalue(cauthor),
     fieldname(text("学") + h(2em) + text("号：")),
     fieldvalue(studentid),
-    fieldname(text("学") + h(2em) + text("院：")),
-    fieldvalue(school),
+    fieldname(text("院") + h(2em) + text("系：")),
+    fieldvalue(department),
     fieldname(text("专") + h(2em) + text("业：")),
     fieldvalue(cmajor),
     fieldname(text("指导教师：")),
@@ -637,41 +617,36 @@
   pagebreak()
 
   // Chinese abstract
-  par(justify: true, first-line-indent: 2em, leading: linespacing)[
-    #heading(numbering: none, outlined: false, "摘要")
+  par(justify: true, first-line-indent: 0em, leading: 25pt)[
+    #align(center)[#text(font: 字体.黑体, size: 字号.二号, ctitle)]
+    #if csubtitle != "" {
+      align(right)[#text(font: 字体.黑体, size: 字号.小二, "——" + csubtitle)]
+    }
+    #align(center)[#text(font: 字体.宋体, size: 字号.四号, cauthor)]
+    #align(center)[#text(font: 字体.楷体, size: 字号.小四, department + h(1em) + "指导教师：" + csupervisor)]
+    #text(font: 字体.黑体, size: 字号.三号, "［摘要］：")
+    #set text(font: 字体.宋体, size: 字号.四号, weight: "regular")
     #cabstract
+    #v(2fr)
+    #text(font: 字体.黑体, size: 字号.三号, "［关键词］：")
+    #ckeywords.join("；")
     #v(1fr)
-    #set par(first-line-indent: 0em)
-    *关键词：*
-    #ckeywords.join("，")
-    #v(2em)
   ]
 
   pagebreak()
 
   // English abstract
-  par(justify: true, first-line-indent: 2em, leading: linespacing)[
-    #[
-      #set text(字号.三号)
-      #set align(center)
-      #strong(etitle)
-    ]
-    #if not blind {
-      [
-        #set align(center)
-        #eauthor \(#emajor\) \
-        Directed by #esupervisor
-      ]
-    }
-    #heading(numbering: none, outlined: false, "Abstract")
+  par(justify: true, first-line-indent: 0em, leading: 25pt)[
+    #text(font: 字体.英文, size: 字号.三号, "[Abstract]: ")
+    #set text(font: 字体.英文, size: 字号.四号, weight: "regular")
     #eabstract
     #v(1fr)
-    #set par(first-line-indent: 0em)
-    *KEYWORDS:*
-    #h(0.5em, weak: true)
-    #ekeywords.join(", ")
-    #v(2em)
+    #text(font: 字体.英文, size: 字号.三号, "[Keywords]: ")
+    #ekeywords.join("; ")
+    #v(1fr)
   ]
+
+  pagebreak()
   
   // Table of contents
   chineseoutline(
@@ -680,17 +655,7 @@
     indent: true,
   )
 
-  if listofimage {
-    listoffigures()
-  }
-
-  if listoftable {
-    listoffigures(title: "表格", kind: table)
-  }
-
-  if listofcode {
-    listoffigures(title: "代码", kind: "code")
-  }
+  pagebreak()
 
   set align(left + top)
   par(justify: true, first-line-indent: 2em, leading: linespacing)[
@@ -698,64 +663,12 @@
   ]
 
   if not blind {
+    pagebreak()
+    align(center)[#heading(level: 1, numbering: none, "致谢")]
     par(justify: true, first-line-indent: 2em, leading: linespacing)[
-      #heading(numbering: none, "致谢")
       #acknowledgements
     ]
 
     partcounter.update(30)
-    heading(numbering: none, "南方科技大学学位论文原创性声明和使用授权说明")
-    align(center)[#heading(level: 2, numbering: none, outlined: false, "原创性声明")]
-    par(justify: true, first-line-indent: 2em, leading: linespacing)[
-      本人郑重声明：
-      所呈交的学位论文，是本人在导师的指导下，独立进行研究工作所取得的成果。
-      除文中已经注明引用的内容外，
-      本论文不含任何其他个人或集体已经发表或撰写过的作品或成果。
-      对本文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。
-      本声明的法律结果由本人承担。
-
-      #v(1em)
-
-      #align(right)[
-        论文作者签名
-        #h(5em)
-        日期：
-        #h(2em)
-        年
-        #h(2em)
-        月
-        #h(2em)
-        日
-      ]
-
-      #align(center)[#heading(level: 2, numbering: none, outlined: false, "学位论文使用授权说明")]
-      #v(-0.33em, weak: true)
-      #align(center)[#text(字号.五号)[（必须装订在提交学校图书馆的印刷本）]]
-      #v(字号.小三)
-
-      本人完全了解南方科技大学关于收集、保存、使用学位论文的规定，即：
-
-      - 按照学校要求提交学位论文的印刷本和电子版本；
-      - 学校有权保存学位论文的印刷本和电子版，并提供目录检索与阅览服务，在校园网上提供服务；
-      - 学校可以采用影印、缩印、数字化或其它复制手段保存论文；
-      - 因某种特殊原因须要延迟发布学位论文电子版，授权学校 #box[#rect(width: 9pt, height: 9pt)] 一年 /	 #box[#rect(width: 9pt, height: 9pt)] 两年 / #box[#rect(width: 9pt, height: 9pt)] 三年以后，在校园网上全文发布。
-
-      #align(center)[（保密论文在解密后遵守此规定）]
-
-      #v(1em)
-      #align(right)[
-        论文作者签名
-        #h(5em)
-        导师签名
-        #h(5em)
-        日期：
-        #h(2em)
-        年
-        #h(2em)
-        月
-        #h(2em)
-        日
-      ]
-    ]
   }
 }

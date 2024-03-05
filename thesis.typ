@@ -1,36 +1,5 @@
-#import "template.typ": *
-
-#show: doc => conf(
-  class: "",
-  serialnumber: "",
-  udc: "",
-  confidence: "",
-  cauthor: "张三",
-  eauthor: "San Zhang",
-  studentid: "12010000",
-  ctitle: "南方科技大学学位论文模板\nsustech-ug-thesis-typst v0.0.1",
-  etitle: "SUSTech thesis document template\nsustech-ug-thesis-typst v0.0.1",
-  school: "某个学院",
-  cfirstmajor: "某个一级学科",
-  cmajor: "某个专业",
-  emajor: "Some Major",
-  csupervisor: "李四 教授",
-  esupervisor: "Prof. Si Li",
-  date: "二零二四年六月X日",
-  cabstract: "本文介绍了 sustech-ug-thesis-typst 文档模板所提供的功能。",
-  ckeywords: ("Typst", "模板"),
-  eabstract: "This document introduces the features of the sustech-ug-thesis-typst template.",
-  ekeywords: ("Typst", "Template"),
-  acknowledgements: [感谢 Typst 开发者的辛勤付出。],
-  linespacing: 1.5em,
-  outlinedepth: 3,
-  blind: false,
-  listofimage: true,
-  listoftable: true,
-  listofcode: true,
-  alwaysstartodd: true,
-  doc,
-)
+#import "metadata.typ": *
+#show: doc => meta(doc)
 
 = 基本功能 <intro>
 
@@ -166,7 +135,7 @@ Typst 中的标题使用 `=` 表示，其后跟着标题的内容。`=` 的数�
 ]
 )\
 
-@web 展示了 Typst 网页版的界面。更多有关内容，可以参考 @about。@developers 中介绍了 Typst 的主要开发者。代码中的 `<web>` 是这一图片的标签，可以在文中通过 `@web` 来引用。
+@web 展示了 Typst 网页版的界面。更多有关内容，可以参考 @about。代码中的 `<web>` 是这一图片的标签，可以在文中通过 `@web` 来引用。
 
 == 表格
 
@@ -424,8 +393,6 @@ $ lim_x =
 
 Typst 支持 BibLaTeX 格式的 `.bib` 文件，同时也新定义了一种基于 YAML 的文献引用格式。要想在文档中引用参考文献，需要在文档中通过调用 `bibliography` 函数来引用参考文献文件。下面是一个示例：
 
-#pagebreak()
-
 #table(
   columns: (1fr, 1fr),
   [
@@ -439,9 +406,7 @@ Typst 支持 BibLaTeX 格式的 `.bib` 文件，同时也新定义了一种基�
   ```typ
 可以像这样引用参考文献： @wang2010guide 和 @kopka2004guide。
 
-#bibliography("ref.bib",
-  style: "ieee"
-)
+#biblio("ref.bib")
   ```,
   [
     可以像这样引用参考文献： @wang2010guide 和 @kopka2004guide。
@@ -462,23 +427,23 @@ $ mat(1, 2; 3, 4) $
 $ lim_x =
     op("lim", limits: #true)_x $
 
-== 理论二
-
-在 @theory1 中，我们回顾了 @intro 中的公式。下面，我们来推导一些新的公式：
-
-#lorem(100)
-
 = 展望
 
 目前本模板还有一些不足之处，有待进一步完善：
 
 - 参考文献格式，特别是中文参考文献的格式不完全符合学校有关规定。#link("https://discord.com/channels/1054443721975922748/1094796790559162408/1094928907880386662", "Discord 上的这个对话")显示，Typst 有关功能还在开发中。待有关接口对外开放后，本模板将会进行相应的适配。
 
+#pagebreak()
+#biblio("ref.bib")
+
+#pagebreak()
+
 #appendix()
+#set heading(numbering: numbering("A1.1", 1, 1, 1))
 
-= 关于 Typst <about>
+== 关于 Typst <about>
 
-== 在附录中插入图片和公式等
+=== 在附录中插入图片和公式等
 
 附录中也支持脚注#footnote[这是一个附录中的脚注。]。
 
@@ -565,13 +530,4 @@ $ vec(overline(underbracket(underline(1 + 2) + overbrace(3 + dots.c + 10, "large
   outline: true,
 ) <appendix-code>
 
-== Typst 的开发者 <developers>
 
-#lorem(100)
-
-#include "sample-section.typ"
-
-#pagebreak()
-#bibliography("ref.bib",
-  style: "ieee"
-)
