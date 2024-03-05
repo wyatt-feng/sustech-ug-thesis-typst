@@ -20,8 +20,8 @@
 
 #let 字体 = (
   仿宋: ("Times New Roman", "FangSong"),
-  宋体: ("Times New Roman", "SimSun"),
-  黑体: ("Times New Roman", "SimHei"),
+  宋体: ("Times New Roman", "Source Han Serif"),
+  黑体: ("Times New Roman", "Source Han Sans"),
   楷体: ("Times New Roman", "KaiTi"),
   代码: ("New Computer Modern Mono", "Times New Roman", "SimSun"),
 )
@@ -334,28 +334,32 @@
 }
 
 #let conf(
-  cauthor: "张三",
-  eauthor: "San Zhang",
-  studentid: "23000xxxxx",
-  blindid: "L2023XXXXX",
-  cthesisname: "博士研究生学位论文",
-  cheader: "北京大学博士学位论文",
-  ctitle: "北京大学学位论文 Typst 模板",
-  etitle: "Typst Template for Peking University Dissertations",
-  school: "某个学院",
-  cfirstmajor: "某个一级学科",
-  cmajor: "某个专业",
+  class: "",
+  serialnumber: "",
+  udc: "",
+  confidence: "",
+  cauthor: "",
+  eauthor: "",
+  studentid: "",
+  blindid: "",
+  cthesisname: "本科生毕业设计（论文）",
+  cheader: "",
+  ctitle: "",
+  etitle: "",
+  school: "",
+  cfirstmajor: "",
+  cmajor: "计算机科学与技术",
   emajor: "Some Major",
   direction: "某个研究方向",
-  csupervisor: "李四",
-  esupervisor: "Si Li",
-  date: "二零二三年六月",
+  csupervisor: "",
+  esupervisor: "",
+  date: "某某某某年某某月某某日",
   cabstract: [],
   ckeywords: (),
   eabstract: [],
   ekeywords: (),
   acknowledgements: [],
-  linespacing: 1em,
+  linespacing: 1.5em,
   outlinedepth: 3,
   blind: false,
   listofimage: true,
@@ -364,75 +368,8 @@
   alwaysstartodd: true,
   doc,
 ) = {
-  let smartpagebreak = () => {
-    if alwaysstartodd {
-      skippedstate.update(true)
-      pagebreak(to: "odd", weak: true)
-      skippedstate.update(false)
-    } else {
-      pagebreak(weak: true)
-    }
-  }
-
   set page("a4",
-    header: locate(loc => {
-      if skippedstate.at(loc) and calc.even(loc.page()) { return }
-      [
-        #set text(字号.五号)
-        #set align(center)
-        #if partcounter.at(loc).at(0) < 10 {
-          let headings = query(selector(heading).after(loc), loc)
-          let next_heading = if headings == () {
-            ()
-          } else {
-            headings.first().body.text
-          }
-
-          // [HARDCODED] Handle the first page of Chinese abstract specailly
-          if next_heading == "摘要" and calc.odd(loc.page()) {
-            [
-              #next_heading
-              #v(-1em)
-              #line(length: 100%)
-            ]
-          }
-        } else if partcounter.at(loc).at(0) <= 20 {
-          if calc.even(loc.page()) {
-            [
-              #align(center, cheader)
-              #v(-1em)
-              #line(length: 100%)
-            ]
-          } else {
-            let footers = query(selector(<__footer__>).after(loc), loc)
-            if footers != () {
-              let elems = query(
-                heading.where(level: 1).before(footers.first().location()), footers.first().location()
-              )
-
-              // [HARDCODED] Handle the last page of Chinese abstract specailly
-              let el = if elems.last().body.text == "摘要" or not skippedstate.at(footers.first().location()) {
-                elems.last()
-              } else {
-                elems.at(-2)
-              }
-              [
-                #let numbering = if el.numbering == chinesenumbering {
-                  chinesenumbering(..counter(heading).at(el.location()), location: el.location())
-                } else if el.numbering != none {
-                  numbering(el.numbering, ..counter(heading).at(el.location()))
-                }
-                #if numbering != none {
-                  numbering
-                  h(0.5em)
-                }
-                #el.body
-                #v(-1em)
-                #line(length: 100%)
-              ]
-            }
-          }
-      }]}),
+    margin: (x: 3.17cm, y: 2.54cm),
     footer: locate(loc => {
       if skippedstate.at(loc) and calc.even(loc.page()) { return }
       [
@@ -456,7 +393,7 @@
     }),
   )
 
-  set text(字号.一号, font: 字体.宋体, lang: "zh")
+  set text(字号.二号, font: 字体.黑体, lang: "zh")
   set align(center + horizon)
   set heading(numbering: chinesenumbering)
   set figure(
@@ -502,18 +439,6 @@
     ]
 
     #if it.level == 1 {
-      if not it.body.text in ("Abstract", "学位论文使用授权说明", "版权声明")  {
-        smartpagebreak()
-      }
-      locate(loc => {
-        if it.body.text == "摘要" {
-          partcounter.update(10)
-          counter(page).update(1)
-        } else if it.numbering != none and partcounter.at(loc).first() < 20 {
-          partcounter.update(20)
-          counter(page).update(1)
-        }
-      })
       if it.numbering != none {
         chaptercounter.step()
       }
@@ -529,7 +454,7 @@
       if it.level == 2 {
         sizedheading(it, 字号.四号)
       } else if it.level == 3 {
-        sizedheading(it, 字号.中四)
+        sizedheading(it, 字号.小四)
       } else {
         sizedheading(it, 字号.小四)
       }
@@ -614,12 +539,12 @@
 
   let fieldname(name) = [
     #set align(right + top)
-    #strong(name)
+    #text(font: 字体.宋体, weight: "bold", name)
   ]
 
   let fieldvalue(value) = [
     #set align(center + horizon)
-    #set text(font: 字体.仿宋)
+    #set text(font: 字体.宋体, size: 字号.三号, weight: "regular")
     #grid(
       rows: (auto, auto),
       row-gutter: 0.2em,
@@ -628,100 +553,88 @@
     )
   ]
 
-  // Cover page
-
-  if blind {
-    set align(center + top)
-    text(字号.初号)[#strong(cheader)]
-    linebreak()
-    set text(字号.三号, font: 字体.仿宋)
-    set par(justify: true, leading: 1em)
-    [（匿名评阅论文封面）]
-    v(2fr)
-    grid(
-      columns: (80pt, 320pt),
-      row-gutter: 1.5em,
-      align(left + top)[中文题目：],
-      align(left + top)[#ctitle],
-      align(left + top)[英文题目：],
-      align(left + top)[#etitle],
-    )
-    v(2em)
-    grid(
-      columns: (80pt, 320pt),
-      row-gutter: 1.5em,
-      align(left + top)[一级学科：],
-      align(left + top)[#cfirstmajor],
-      align(left + top)[二级学科：],
-      align(left + top)[#cmajor],
-      align(left + top)[论文编号：],
-      align(left + top)[#blindid],
-    )
-
-    v(4fr)
-    text(字号.小二, font: 字体.仿宋)[#date]
-    v(1fr)
-  } else {
-    box(
-      grid(
-        columns: (auto, auto),
-        gutter: 0.4em,
-        image("pkulogo.svg", height: 2.4em, fit: "contain"),
-        image("pkuword.svg", height: 1.6em, fit: "contain")
-      )
-    )
-    linebreak()
-    strong(cthesisname)
-
-    set text(字号.二号)
-    v(60pt)
-    grid(
-      columns: (80pt, 300pt),
-      [
-        #set align(right + top)
-        题目：
-      ],
-      [
-        #set align(center + horizon)
-        #chineseunderline(ctitle, width: 300pt, bold: true)
-      ]
-    )
-
-    v(60pt)
-    set text(字号.三号)
-
-    grid(
-      columns: (80pt, 280pt),
-      row-gutter: 1em,
-      fieldname(text("姓") + h(2em) + text("名：")),
-      fieldvalue(cauthor),
-      fieldname(text("学") + h(2em) + text("号：")),
-      fieldvalue(studentid),
-      fieldname(text("学") + h(2em) + text("院：")),
-      fieldvalue(school),
-      fieldname(text("专") + h(2em) + text("业：")),
-      fieldvalue(cmajor),
-      fieldname("研究方向："),
-      fieldvalue(direction),
-      fieldname(text("导") + h(2em) + text("师：")),
-      fieldvalue(csupervisor),
-    )
-
-    v(60pt)
-    text(字号.小二)[#date]
-  }
-
-  smartpagebreak()
-
-  // Copyright
-  set align(left + top)
-  set text(字号.小四)
-  heading(numbering: none, outlined: false, "版权声明")
-  par(justify: true, first-line-indent: 2em, leading: linespacing)[
-    任何收存和保管本论文各种版本的单位和个人，未经本论文作者同意，不得将本论文转借他人，亦不得随意复制、抄录、拍照或以任何方式传播。否则，引起有碍作者著作权之问题，将可能承担法律责任。
+  let smallfieldname(name) = [
+    #text(font: 字体.宋体, size: 字号.小四, weight: "regular", name)
   ]
 
-  smartpagebreak()
+  let smallfieldvalue(value) = [
+    #set align(left + horizon)
+    #set text(font: 字体.宋体, size: 字号.小四, weight: "regular")
+    #grid(
+      rows: (1em, auto),
+      row-gutter: 0.2em,
+      value,
+      line(length: 4em)
+    )
+  ]
+
+  // Cover page
+  grid(
+    columns: (2em, 5fr, 2em, 1fr),
+    align(left)[#smallfieldname("分类号")],
+    align(left)[#smallfieldvalue(class)],
+    align(left)[#smallfieldname(text("编") + h(1em) + text("号"))],
+    align(left)[#smallfieldvalue(serialnumber)],
+  )
+  grid(
+    columns: (2em, 5fr, 2em, 1fr),
+    align(left)[#smallfieldname("ＵＤＣ")],
+    align(left)[#smallfieldvalue(udc)],
+    align(left)[#smallfieldname(text("密") + h(1em) + text("级"))],
+    align(left)[#smallfieldvalue(confidence)],
+  )
+  box(
+    grid(
+      columns: (auto, auto),
+      gutter: 0.4em,
+      image("sustech-cn.svg", height: 4.8em, fit: "contain"),
+    )
+  )
+  linebreak()
+  v(1em)
+  text(font: 字体.宋体, size: 字号.小初, weight: "bold", cthesisname)
+
+  set text(font: 字体.宋体, size: 字号.三号, weight: "bold")
+  grid(
+    columns: (80pt, 280pt),
+    row-gutter: 1.5em,
+    fieldname(text("题") + h(2em) + text("目：")),
+    chineseunderline(ctitle),
+    fieldname(text("姓") + h(2em) + text("名：")),
+    fieldvalue(cauthor),
+    fieldname(text("学") + h(2em) + text("号：")),
+    fieldvalue(studentid),
+    fieldname(text("学") + h(2em) + text("院：")),
+    fieldvalue(school),
+    fieldname(text("专") + h(2em) + text("业：")),
+    fieldvalue(cmajor),
+    fieldname(text("指导教师：")),
+    fieldvalue(csupervisor),
+  )
+
+  v(1em)
+  text(weight: "regular", size: 字号.三号)[#date]
+
+  pagebreak()
+
+  // Honor Pledge
+  set align(left + top)
+  align(center, text(font: 字体.黑体, weight: "bold", size: 字号.二号, "诚信承诺书"))
+  v(3em)
+  set text(font: 字体.宋体, weight: "regular", size: 字号.四号)
+  par(justify: true, first-line-indent: 1em, leading: linespacing)[1.#h(1em)本人郑重承诺所呈交的毕业设计（论文），是在导师的指导下，独立进行研究工作所取得的成果，所有数据、图片资料均真实可靠。]
+  v(0.5em)
+  par(justify: true, first-line-indent: 1em, leading: linespacing)[2.#h(1em)除文中已经注明引用的内容外，本论文不包含任何其他人或集体已经发表或撰写过的作品或成果。对本论文的研究作出重要贡献的个人和集体，均已在文中以明确的方式标明。]
+  v(0.5em)
+  par(justify: true, first-line-indent: 1em, leading: linespacing)[3.#h(1em)本人承诺在毕业论文（设计）选题和研究内容过程中没有抄袭他人研究成果和伪造相关数据等行为。]
+  v(0.5em)
+  par(justify: true, first-line-indent: 1em, leading: linespacing)[4.#h(1em)在毕业论文（设计）中对侵犯任何方面知识产权的行为，由本人承担相应的法律责任。]
+  v(3em)
+  align(right, text("作者签名：" + h(5em)))
+  v(1em)
+  align(right, date)
+
+  pagebreak()
 
   // Chinese abstract
   par(justify: true, first-line-indent: 2em, leading: linespacing)[
@@ -734,12 +647,12 @@
     #v(2em)
   ]
 
-  smartpagebreak()
+  pagebreak()
 
   // English abstract
   par(justify: true, first-line-indent: 2em, leading: linespacing)[
     #[
-      #set text(字号.小二)
+      #set text(字号.三号)
       #set align(center)
       #strong(etitle)
     ]
@@ -791,7 +704,7 @@
     ]
 
     partcounter.update(30)
-    heading(numbering: none, "北京大学学位论文原创性声明和使用授权说明")
+    heading(numbering: none, "南方科技大学学位论文原创性声明和使用授权说明")
     align(center)[#heading(level: 2, numbering: none, outlined: false, "原创性声明")]
     par(justify: true, first-line-indent: 2em, leading: linespacing)[
       本人郑重声明：
@@ -820,7 +733,7 @@
       #align(center)[#text(字号.五号)[（必须装订在提交学校图书馆的印刷本）]]
       #v(字号.小三)
 
-      本人完全了解北京大学关于收集、保存、使用学位论文的规定，即：
+      本人完全了解南方科技大学关于收集、保存、使用学位论文的规定，即：
 
       - 按照学校要求提交学位论文的印刷本和电子版本；
       - 学校有权保存学位论文的印刷本和电子版，并提供目录检索与阅览服务，在校园网上提供服务；
