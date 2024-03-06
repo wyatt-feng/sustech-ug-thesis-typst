@@ -74,20 +74,12 @@
   }
 }
 
-#let chinesenumbering(..nums, location: none, brackets: false) = locate(loc => {
+#let thesisnumbering(..nums, location: none) = locate(loc => {
   let actual_loc = if location == none { loc } else { location }
-  if appendixcounter.at(actual_loc).first() < 10 {
-    if nums.pos().len() == 1 {
-      "第" + chinesenumber(nums.pos().first(), standalone: true) + "章"
-    } else {
-      numbering(if brackets { "(1.1)" } else { "1.1" }, ..nums)
-    }
+  if appendixcounter.at(actual_loc).first() < 1 {
+    numbering("1.1", ..nums)
   } else {
-    if nums.pos().len() == 1 {
-      "附录 " + numbering("A.1", ..nums)
-    } else {
-      numbering(if brackets { "(A.1)" } else { "A.1" }, ..nums)
-    }
+    numbering("A1.1", ..nums)
   }
 })
 
@@ -147,7 +139,7 @@
       if depth != none and el.level > depth { continue }
 
       let maybe_number = if el.numbering != none {
-        numbering(el.numbering, ..counter(heading).at(el.location()))
+        numbering(el.numbering.with(location: el.location()), ..counter(heading).at(el.location()))
         h(0.5em)
       }
 
@@ -205,7 +197,7 @@
     for el in elements {
       let maybe_number = {
         let el_loc = el.location()
-        chinesenumbering(chaptercounter.at(el_loc).first(), counter(figure.where(kind: kind)).at(el_loc).first(), location: el_loc)
+        thesisnumbering(chaptercounter.at(el_loc).first(), counter(figure.where(kind: kind)).at(el_loc).first(), location: el_loc)
         h(0.5em)
       }
       let line = {
@@ -312,18 +304,13 @@
     kind: table
   )
 }
-#let appendix(append) = {
+
+#let appendix() = {
   align(center)[#heading(numbering: none, "附录")]
   appendixcounter.update(10)
   chaptercounter.update(1)
   counter(heading).update(1)
-  set heading(numbering: numbering("A1.1", 1, 1, 1))
-  par(justify: true, first-line-indent: 2em)[
-    #set text(font: 字体.宋体, size: 字号.小四)
-    #append
-  ]
 }
-
 
 #let conf(
   class: "",
@@ -380,26 +367,9 @@
 
   set text(字号.二号, font: 字体.黑体, lang: "zh")
   set align(center + horizon)
-  set heading(numbering: numbering("1.1", 1, 1, 1))
-  set figure(
-    numbering: (..nums) => locate(loc => {
-      if appendixcounter.at(loc).first() < 10 {
-        numbering("1.1", chaptercounter.at(loc).first(), ..nums)
-      } else {
-        numbering("A.1", chaptercounter.at(loc).first(), ..nums)
-      }
-    })
-  )
-  set math.equation(
-    numbering: (..nums) => locate(loc => {
-      set text(font: 字体.宋体)
-      if appendixcounter.at(loc).first() < 10 {
-        numbering("(1.1)", chaptercounter.at(loc).first(), ..nums)
-      } else {
-        numbering("(A.1)", chaptercounter.at(loc).first(), ..nums)
-      }
-    })
-  )
+  set heading(numbering: thesisnumbering)
+  set figure(numbering: thesisnumbering)
+  set math.equation(numbering: thesisnumbering)
   set list(indent: 2em)
   set enum(indent: 2em)
 
@@ -482,34 +452,34 @@
         // Handle equations
         link(el_loc, [
           式
-          #chinesenumbering(chaptercounter.at(el_loc).first(), equationcounter.at(el_loc).first(), location: el_loc, brackets: true)
+          #thesisnumbering(chaptercounter.at(el_loc).first(), equationcounter.at(el_loc).first(), location: el_loc)
         ])
       } else if el.func() == figure {
         // Handle figures
         if el.kind == image {
           link(el_loc, [
             图
-            #chinesenumbering(chaptercounter.at(el_loc).first(), imagecounter.at(el_loc).first(), location: el_loc)
+            #thesisnumbering(chaptercounter.at(el_loc).first(), imagecounter.at(el_loc).first(), location: el_loc)
           ])
         } else if el.kind == table {
           link(el_loc, [
             表
-            #chinesenumbering(chaptercounter.at(el_loc).first(), tablecounter.at(el_loc).first(), location: el_loc)
+            #thesisnumbering(chaptercounter.at(el_loc).first(), tablecounter.at(el_loc).first(), location: el_loc)
           ])
         } else if el.kind == "code" {
           link(el_loc, [
             代码
-            #chinesenumbering(chaptercounter.at(el_loc).first(), rawcounter.at(el_loc).first(), location: el_loc)
+            #thesisnumbering(chaptercounter.at(el_loc).first(), rawcounter.at(el_loc).first(), location: el_loc)
           ])
         }
       } else if el.func() == heading {
         // Handle headings
         if el.level == 1 {
-          link(el_loc, chinesenumbering(..counter(heading).at(el_loc), location: el_loc))
+          link(el_loc, thesisnumbering(..counter(heading).at(el_loc), location: el_loc))
         } else {
           link(el_loc, [
             节
-            #chinesenumbering(..counter(heading).at(el_loc), location: el_loc)
+            #thesisnumbering(..counter(heading).at(el_loc), location: el_loc)
           ])
         }
       }

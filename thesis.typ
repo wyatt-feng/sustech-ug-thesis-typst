@@ -438,7 +438,7 @@ $ lim_x =
 
 #pagebreak()
 
-#show: rest => appendix(rest)
+#appendix()
 
 == 关于 Typst <about>
 
