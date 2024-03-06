@@ -387,8 +387,8 @@
       it
     } else if it.kind == image {
       it.body
-      [
-        #set text(字号.五号)
+      align(center)[
+        #set text(font: 字体.黑体, size: 字号.五号, weight: "bold")
         #it.caption
       ]
     } else if it.kind == table {
