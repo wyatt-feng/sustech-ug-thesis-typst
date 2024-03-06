@@ -4,7 +4,7 @@ Do not use at the moment! Still under heavy development.
 
 ![sustech-ug-thesis-typst](./resources/images/cover.png)
 
-The full PDF file is available [here](./resources/sample.pdf).
+The full PDF file is available [here](./resources/sample.pdf), which includes the basic syntax of Typst.
 
 ## Usage
 
@@ -22,4 +22,4 @@ The full PDF file is available [here](./resources/sample.pdf).
 
 ## Acknowledgement
 
-This project is based on lucifer1004's [pkuthss-typst](https://github.com/lucifer1004/pkuthss-typst). 
+This template is based on lucifer1004's *excellent* project [pkuthss-typst](https://github.com/lucifer1004/pkuthss-typst). It did most of the dirty job and helped me understand Typst and templates.
