@@ -1,3 +1,4 @@
+#import "@preview/tablex:0.0.8": tablex, rowspanx, colspanx
 #let 字号 = (
   初号: 42pt,
   小初: 36pt,
@@ -246,70 +247,27 @@
   )
 }
 
-#let booktab(columns: (), aligns: (), width: auto, caption: none, ..cells) = {
-  let headers = cells.pos().slice(0, columns.len())
-  let contents = cells.pos().slice(columns.len(), cells.pos().len())
-  set align(center)
-
-  if aligns == () {
-    for i in range(0, columns.len()) {
-      aligns.push(center)
-    }
-  }
-
-  let content_aligns = ()
-  for i in range(0, contents.len()) {
-    content_aligns.push(aligns.at(calc.rem(i, aligns.len())))
-  }
-
-  return figure(
-    block(
-      width: width,
-      grid(
-        columns: (auto),
-        row-gutter: 1em,
-        line(length: 100%),
-        [
-          #set align(center)
-          #box(
-            width: 100% - 1em,
-            grid(
-              columns: columns,
-              ..headers.zip(aligns).map(it => [
-                #set align(it.last())
-                #strong(it.first())
-              ])
-            )
-          )
-        ],
-        line(length: 100%),
-        [
-          #set align(center)
-          #box(
-            width: 100% - 1em,
-            grid(
-              columns: columns,
-              row-gutter: 1em,
-              ..contents.zip(content_aligns).map(it => [
-                #set align(it.last())
-                #it.first()
-              ])
-            )
-          )
-        ],
-        line(length: 100%),
-      ),
-    ),
-    caption: caption,
-    kind: table
-  )
-}
-
 #let appendix() = {
   align(center)[#heading(numbering: none, "附录")]
   appendixcounter.update(10)
   chaptercounter.update(1)
   counter(heading).update(1)
+}
+
+#let tbl(tbl, caption: "", source: "") = {
+  set text(font: 字体.宋体, size: 字号.五号)
+ [
+    #figure(
+      tbl,
+      caption: caption,
+      supplement: [表],
+      kind: table,
+    )
+    #if source != "" {
+      v(-1em)
+      align(left)[数据来源：#source]
+    }
+  ]
 }
 
 #let conf(
@@ -377,6 +335,16 @@
   show emph: it => text(font: 字体.楷体, style: "italic", it.body)
   show par: set block(spacing: linespacing)
   show raw: set text(font: 字体.代码)
+  show footnote.entry: it => {
+    let loc = it.note.location()
+    let superscript_numbering = c => [#super[#c] ]
+    numbering(
+      superscript_numbering,
+      ..counter(footnote).at(loc),
+    )
+    set text(font: 字体.宋体, size: 字号.小五)
+    it.note.body
+  }
 
   show heading: it => [
     // Cancel indentation for headings
@@ -424,8 +392,8 @@
         #it.caption
       ]
     } else if it.kind == table {
-      [
-        #set text(字号.五号)
+      align(center)[
+        #set text(font: 字体.黑体, size: 字号.五号, weight: "bold")
         #it.caption
       ]
       it.body
