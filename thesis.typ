@@ -438,8 +438,7 @@ $ lim_x =
 
 #pagebreak()
 
-#appendix()
-#set heading(numbering: numbering("A1.1", 1, 1, 1))
+#show: rest => appendix(rest)
 
 == 关于 Typst <about>
 

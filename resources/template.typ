@@ -36,12 +36,6 @@
 #let imagecounter = counter(figure.where(kind: image))
 #let tablecounter = counter(figure.where(kind: table))
 #let equationcounter = counter(math.equation)
-#let appendix() = {
-  align(center)[#heading(numbering: none, "附录")]
-  appendixcounter.update(10)
-  chaptercounter.update(1)
-  counter(heading).update(1)
-}
 #let biblio(path) = {
   align(center)[#heading(numbering: none, "参考文献")]
   bibliography(path, title: none, style: "ieee")
@@ -318,6 +312,18 @@
     kind: table
   )
 }
+#let appendix(append) = {
+  align(center)[#heading(numbering: none, "附录")]
+  appendixcounter.update(10)
+  chaptercounter.update(1)
+  counter(heading).update(1)
+  set heading(numbering: numbering("A1.1", 1, 1, 1))
+  par(justify: true, first-line-indent: 2em)[
+    #set text(font: 字体.宋体, size: 字号.小四)
+    #append
+  ]
+}
+
 
 #let conf(
   class: "",
