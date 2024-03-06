@@ -1,4 +1,4 @@
-# Typst Template for SUSTech UG Thesis 南科大本科生毕业设计Typst模版
+# Typst Template for SUSTech UG Thesis<br/>南科大本科生毕业设计Typst模版
 
 ![sustech-ug-thesis-typst](./resources/images/cover.png)
 
