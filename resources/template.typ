@@ -43,38 +43,6 @@
 }
 #let skippedstate = state("skipped", false)
 
-#let chinesenumber(num, standalone: false) = if num < 11 {
-  ("零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十").at(num)
-} else if num < 100 {
-  if calc.rem(num, 10) == 0 {
-    chinesenumber(calc.floor(num / 10)) + "十"
-  } else if num < 20 and standalone {
-    "十" + chinesenumber(calc.rem(num, 10))
-  } else {
-    chinesenumber(calc.floor(num / 10)) + "十" + chinesenumber(calc.rem(num, 10))
-  }
-} else if num < 1000 {
-  let left = chinesenumber(calc.floor(num / 100)) + "百"
-  if calc.rem(num, 100) == 0 {
-    left
-  } else if calc.rem(num, 100) < 10 {
-    left + "零" + chinesenumber(calc.rem(num, 100))
-  } else {
-    left + chinesenumber(calc.rem(num, 100))
-  }
-} else {
-  let left = chinesenumber(calc.floor(num / 1000)) + "千"
-  if calc.rem(num, 1000) == 0 {
-    left
-  } else if calc.rem(num, 1000) < 10 {
-    left + "零" + chinesenumber(calc.rem(num, 1000))
-  } else if calc.rem(num, 1000) < 100 {
-    left + "零" + chinesenumber(calc.rem(num, 1000))
-  } else {
-    left + chinesenumber(calc.rem(num, 1000))
-  }
-}
-
 #let thesisnumbering(..nums, location: none) = locate(loc => {
   let actual_loc = if location == none { loc } else { location }
   if appendixcounter.at(actual_loc).first() < 1 {
@@ -82,6 +50,11 @@
   } else {
     numbering("A1.1", ..nums)
   }
+})
+
+#let figurenumbering(..nums, location: none) = locate(loc => {
+  let actual_loc = if location == none { loc } else { location }
+  nums.pos().last()
 })
 
 #let chineseunderline(s, width: 300pt, bold: false) = {
@@ -190,48 +163,6 @@
   })
 }
 
-#let listoffigures(title: "插图", kind: image) = {
-  heading(title, numbering: none, outlined: false)
-  locate(it => {
-    let elements = query(figure.where(kind: kind).after(it), it)
-
-    for el in elements {
-      let maybe_number = {
-        let el_loc = el.location()
-        thesisnumbering(chaptercounter.at(el_loc).first(), counter(figure.where(kind: kind)).at(el_loc).first(), location: el_loc)
-        h(0.5em)
-      }
-      let line = {
-        style(styles => {
-          let width = measure(maybe_number, styles).width
-          box(
-            width: lengthceil(width),
-            link(el.location(), maybe_number)
-          )
-        })
-
-        link(el.location(), el.caption.body)
-
-        // Filler dots
-        box(width: 1fr, h(10pt) + box(width: 1fr, repeat[.]) + h(10pt))
-
-        // Page number
-        let footers = query(selector(<__footer__>).after(el.location()), el.location())
-        let page_number = if footers == () {
-          0
-        } else {
-          counter(page).at(footers.first().location()).first()
-        }
-        link(el.location(), str(page_number))
-        linebreak()
-        v(-0.2em)
-      }
-
-      line
-    }
-  })
-}
-
 #let codeblock(raw, caption: none, outline: false) = {
   figure(
     if outline {
@@ -326,7 +257,7 @@
   set text(字号.二号, font: 字体.黑体, lang: "zh")
   set align(center + horizon)
   set heading(numbering: thesisnumbering)
-  set figure(numbering: thesisnumbering)
+  set figure(numbering: figurenumbering)
   set math.equation(numbering: thesisnumbering)
   set list(indent: 2em)
   set enum(indent: 2em)
@@ -364,10 +295,7 @@
     #if it.level == 1 {
       chaptercounter.step()
       footnotecounter.update(())
-      imagecounter.update(())
-      tablecounter.update(())
       rawcounter.update(())
-      equationcounter.update(())
 
       sizedheading(it, 字号.三号)
     } else {
@@ -420,24 +348,24 @@
         // Handle equations
         link(el_loc, [
           式
-          #thesisnumbering(chaptercounter.at(el_loc).first(), equationcounter.at(el_loc).first(), location: el_loc)
+          #figurenumbering(chaptercounter.at(el_loc).first(), equationcounter.at(el_loc).first(), location: el_loc)
         ])
       } else if el.func() == figure {
         // Handle figures
         if el.kind == image {
           link(el_loc, [
             图
-            #thesisnumbering(chaptercounter.at(el_loc).first(), imagecounter.at(el_loc).first(), location: el_loc)
+            #figurenumbering(chaptercounter.at(el_loc).first(), imagecounter.at(el_loc).first(), location: el_loc)
           ])
         } else if el.kind == table {
           link(el_loc, [
             表
-            #thesisnumbering(chaptercounter.at(el_loc).first(), tablecounter.at(el_loc).first(), location: el_loc)
+            #figurenumbering(chaptercounter.at(el_loc).first(), tablecounter.at(el_loc).first(), location: el_loc)
           ])
         } else if el.kind == "code" {
           link(el_loc, [
             代码
-            #thesisnumbering(chaptercounter.at(el_loc).first(), rawcounter.at(el_loc).first(), location: el_loc)
+            #figurenumbering(chaptercounter.at(el_loc).first(), rawcounter.at(el_loc).first(), location: el_loc)
           ])
         }
       } else if el.func() == heading {

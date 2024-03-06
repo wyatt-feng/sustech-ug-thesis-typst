@@ -15,7 +15,7 @@ The full PDF file is available [here](./resources/sample.pdf), which includes th
 
 ## TODO
 
-- Tables and images, including captions
+- ~Tables and images, including captions~
 - ~Footnotes~
 - Bibliography
 - English version
