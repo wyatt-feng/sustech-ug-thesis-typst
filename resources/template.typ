@@ -57,6 +57,18 @@
   nums.pos().last()
 })
 
+#let numberedpar(numbering_scheme: "(1)", ..content) = {
+  content.pos().enumerate().map(it => {
+    // There is a bug in the upstream code that wouldn't apply first-line-indent
+    // in blocks, which affects tables, etc. The bug fix seems to be included in
+    // the codebase, but hasn't been released yet.
+    // TODO: remove manual indentation after bug fix.
+
+    // Actually, it wouldn't harm anyway.
+    par(justify: true, first-line-indent: 0em)[#h(2em)#numbering(numbering_scheme, it.at(0)+1)#h(1em)#it.at(1)]
+  }).join()
+}
+
 #let chineseunderline(s, width: 300pt, bold: false) = {
   let chars = s.clusters()
   let n = chars.len()
@@ -187,7 +199,7 @@
 
 #let tbl(tbl, caption: "", source: "") = {
   set text(font: 字体.宋体, size: 字号.五号)
- [
+  [
     #figure(
       tbl,
       caption: caption,
@@ -228,6 +240,7 @@
   ekeywords: (),
   acknowledgements: [],
   linespacing: 1.5em,
+  parspacing: 1.5em,
   outlinedepth: 3,
   blind: false,
   doc,
@@ -261,6 +274,7 @@
   set math.equation(numbering: thesisnumbering)
   set list(indent: 2em)
   set enum(indent: 2em)
+  set par(leading: linespacing)
 
   show strong: it => text(font: 字体.黑体, weight: "bold", it.body)
   show emph: it => text(font: 字体.楷体, style: "italic", it.body)
@@ -470,13 +484,11 @@
   align(center, text(font: 字体.黑体, weight: "bold", size: 字号.二号, "诚信承诺书"))
   v(3em)
   set text(font: 字体.宋体, weight: "regular", size: 字号.四号)
-  par(justify: true, first-line-indent: 1em, leading: linespacing)[1.#h(1em)本人郑重承诺所呈交的毕业设计（论文），是在导师的指导下，独立进行研究工作所取得的成果，所有数据、图片资料均真实可靠。]
-  v(0.5em)
-  par(justify: true, first-line-indent: 1em, leading: linespacing)[2.#h(1em)除文中已经注明引用的内容外，本论文不包含任何其他人或集体已经发表或撰写过的作品或成果。对本论文的研究作出重要贡献的个人和集体，均已在文中以明确的方式标明。]
-  v(0.5em)
-  par(justify: true, first-line-indent: 1em, leading: linespacing)[3.#h(1em)本人承诺在毕业论文（设计）选题和研究内容过程中没有抄袭他人研究成果和伪造相关数据等行为。]
-  v(0.5em)
-  par(justify: true, first-line-indent: 1em, leading: linespacing)[4.#h(1em)在毕业论文（设计）中对侵犯任何方面知识产权的行为，由本人承担相应的法律责任。]
+  numberedpar(numbering_scheme: "1.", "本人郑重承诺所呈交的毕业设计（论文），是在导师的指导下，独立进行研究工作所取得的成果，所有数据、图片资料均真实可靠。",
+  "除文中已经注明引用的内容外，本论文不包含任何其他人或集体已经发表或撰写过的作品或成果。对本论文的研究作出重要贡献的个人和集体，均已在文中以明确的方式标明。",
+  "本人承诺在毕业论文（设计）选题和研究内容过程中没有抄袭他人研究成果和伪造相关数据等行为。",
+  "在毕业论文（设计）中对侵犯任何方面知识产权的行为，由本人承担相应的法律责任。",
+  )
   v(3em)
   align(right, text("作者签名：" + h(5em)))
   v(1em)
@@ -528,6 +540,7 @@
   set align(left + top)
   par(justify: true, first-line-indent: 2em, leading: linespacing)[
     #set text(font: 字体.宋体, size: 字号.小四)
+    #show par: set block(spacing: parspacing)
     #doc
   ]
 

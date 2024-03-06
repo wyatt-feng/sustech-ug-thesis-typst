@@ -23,6 +23,7 @@
   ekeywords: ("Typst", "Template"),
   acknowledgements: [感谢 Typst 开发者的辛勤付出。],
   linespacing: 1.5em,
+  parspacing: 1.5em,
   outlinedepth: 3,
   blind: false,
 )
