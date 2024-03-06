@@ -17,7 +17,7 @@ The full PDF file is available [here](./resources/sample.pdf), which includes th
 
 - ~Tables and images, including captions~
 - ~Footnotes~
-- Bibliography
+- ~Bibliography~
 - English version
 
 ## Acknowledgement

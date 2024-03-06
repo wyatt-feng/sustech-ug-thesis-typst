@@ -39,7 +39,7 @@
 #let equationcounter = counter(math.equation)
 #let biblio(path) = {
   align(center)[#heading(numbering: none, "参考文献")]
-  bibliography(path, title: none, style: "ieee")
+  bibliography(path, title: none, style: "./gb-t-7714-2015-cn.csl")
 }
 #let skippedstate = state("skipped", false)
 
