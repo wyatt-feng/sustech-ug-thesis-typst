@@ -25,8 +25,4 @@
   linespacing: 1.5em,
   outlinedepth: 3,
   blind: false,
-  listofimage: true,
-  listoftable: true,
-  listofcode: true,
-  alwaysstartodd: true,
 )

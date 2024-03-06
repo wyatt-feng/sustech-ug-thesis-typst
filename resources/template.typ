@@ -348,10 +348,6 @@
   linespacing: 1.5em,
   outlinedepth: 3,
   blind: false,
-  listofimage: true,
-  listoftable: true,
-  listofcode: true,
-  alwaysstartodd: true,
   doc,
 ) = {
   set page("a4",
@@ -659,6 +655,7 @@
 
   set align(left + top)
   par(justify: true, first-line-indent: 2em, leading: linespacing)[
+    #set text(font: 字体.宋体, size: 字号.小四)
     #doc
   ]
 
