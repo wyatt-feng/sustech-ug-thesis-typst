@@ -1,22 +1,19 @@
-#import "resources/template.typ": *
+// Import `template_zh.typ` if using Chinese
+// or else import `template_en.typ` if using English
+#import "resources/template_en.typ": *
 #let meta = conf.with(
   class: "",
   serialnumber: "",
   udc: "",
   confidence: "",
-  cauthor: "张三",
-  eauthor: "San Zhang",
+  author: "San Zhang",
   studentid: "12010000",
-  ctitle: "南方科技大学学位论文模板",
-  csubtitle: "一个Typst模版",
-  etitle: "SUSTech thesis document template",
-  esubtitle: "A Typst Template",
-  department: "计算机科学与工程系",
-  cmajor: "计算机科学与技术",
-  emajor: "Some Major",
-  csupervisor: "李四 教授",
-  esupervisor: "Prof. Si Li",
-  date: "二零二四年六月X日",
+  title: "Undergraduate Thesis Template",
+  subtitle: "A Typst One",
+  department: "Computer Science and Engineering",
+  major: "Some Major",
+  supervisor: "Prof. Si Li",
+  date: "June 30, 2024",
   cabstract: "本文介绍了 sustech-ug-thesis-typst 文档模板所提供的功能。",
   ckeywords: ("Typst", "模板"),
   eabstract: "This document introduces the features of the sustech-ug-thesis-typst template.",

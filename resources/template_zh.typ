@@ -218,21 +218,15 @@
   serialnumber: "",
   udc: "",
   confidence: "",
-  cauthor: "",
-  eauthor: "",
+  author: "",
   studentid: "",
   blindid: "",
-  cthesisname: "本科生毕业设计（论文）",
   cheader: "",
-  ctitle: "",
-  csubtitle: "",
-  etitle: "",
-  esubtitle: "",
+  title: "",
+  subtitle: "",
   department: "",
-  cmajor: "",
-  emajor: "",
-  csupervisor: "",
-  esupervisor: "",
+  major: "",
+  supervisor: "",
   date: "某某某某年某某月某某日",
   cabstract: [],
   ckeywords: (),
@@ -454,24 +448,24 @@
   )
   linebreak()
   v(1em)
-  text(font: 字体.宋体, size: 字号.小初, weight: "bold", cthesisname)
+  text(font: 字体.宋体, size: 字号.小初, weight: "bold", "本科生毕业设计（论文）")
 
   set text(font: 字体.宋体, size: 字号.三号, weight: "bold")
   grid(
     columns: (80pt, 280pt),
     row-gutter: 1.5em,
     fieldname(text("题") + h(2em) + text("目：")),
-    chineseunderline(ctitle + "\n" + csubtitle),
+    chineseunderline(title + "\n" + subtitle),
     fieldname(text("姓") + h(2em) + text("名：")),
-    fieldvalue(cauthor),
+    fieldvalue(author),
     fieldname(text("学") + h(2em) + text("号：")),
     fieldvalue(studentid),
     fieldname(text("院") + h(2em) + text("系：")),
     fieldvalue(department),
     fieldname(text("专") + h(2em) + text("业：")),
-    fieldvalue(cmajor),
+    fieldvalue(major),
     fieldname(text("指导教师：")),
-    fieldvalue(csupervisor),
+    fieldvalue(supervisor),
   )
 
   v(1em)
@@ -498,12 +492,12 @@
 
   // Chinese abstract
   par(justify: true, first-line-indent: 0em, leading: 25pt)[
-    #align(center)[#text(font: 字体.黑体, size: 字号.二号, ctitle)]
-    #if csubtitle != "" {
-      align(right)[#text(font: 字体.黑体, size: 字号.小二, "——" + csubtitle)]
+    #align(center)[#text(font: 字体.黑体, size: 字号.二号, title)]
+    #if subtitle != "" {
+      align(right)[#text(font: 字体.黑体, size: 字号.小二, "——" + subtitle)]
     }
-    #align(center)[#text(font: 字体.宋体, size: 字号.四号, cauthor)]
-    #align(center)[#text(font: 字体.楷体, size: 字号.小四, department + h(1em) + "指导教师：" + csupervisor)]
+    #align(center)[#text(font: 字体.宋体, size: 字号.四号, author)]
+    #align(center)[#text(font: 字体.楷体, size: 字号.小四, department + h(1em) + "指导教师：" + supervisor)]
     #text(font: 字体.黑体, size: 字号.三号, "［摘要］：")
     #set text(font: 字体.宋体, size: 字号.四号, weight: "regular")
     #cabstract

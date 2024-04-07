@@ -6,9 +6,10 @@ The full PDF file is available [here](./resources/sample.pdf), which includes th
 
 ## Usage
 
-Discrepancies exist between this template and the formal guideline, and this template hasn't been test out,
-because I haven't graduated yet. Use at your own risk. If you come across a problem, please raise an issue or
-consider fixing it and raising a pull request.
+The templates in both languages are crafted based on the 
+[official template](https://tao.sustech.edu.cn/studentService/graduation_project.html), but discrepancies exist between 
+this template and the formal guideline, and this template hasn't been test out, because I haven't graduated yet. 
+**Use at your own risk.** If you come across a problem, please raise an issue or consider fixing it and raising a pull request.
 
 - Install the latest version of [Typst](https://github.com/typst/typst). It's way easier and faster than Latex!
 - Download and extract the entire project
@@ -21,7 +22,7 @@ consider fixing it and raising a pull request.
 - ~Tables and images, including captions~
 - ~Footnotes~
 - ~Bibliography~
-- English version
+- ~English version~
 
 ## Acknowledgement
 
