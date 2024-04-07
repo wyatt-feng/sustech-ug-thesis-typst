@@ -218,6 +218,7 @@
   serialnumber: "",
   udc: "",
   confidence: "",
+  available_for_reference: true,
   author: "",
   studentid: "",
   blindid: "",
@@ -437,7 +438,20 @@
     align(left)[#smallfieldname("UDC")],
     align(left)[#smallfieldvalue(udc)],
     align(left)[#smallfieldname("Available for reference")],
-    align(left)[#smallfieldname[Yes #sym.checkmark No #sym.ballot]],
+    align(left, smallfieldname[
+    Yes
+    #if available_for_reference {
+      sym.checkmark
+    } else {
+      sym.ballot
+    }
+    #h(0.5em)
+    No
+    #if available_for_reference {
+      sym.ballot
+    } else {
+      sym.checkmark
+    }]),
   )
   box(
     grid(

@@ -218,6 +218,7 @@
   serialnumber: "",
   udc: "",
   confidence: "",
+  available_for_reference: true,
   author: "",
   studentid: "",
   blindid: "",

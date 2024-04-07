@@ -1,11 +1,19 @@
 // Import `template_zh.typ` if using Chinese
 // or else import `template_en.typ` if using English
+// 如果是中文论文，则导入 `template_zh.typ`
 #import "resources/template_en.typ": *
 #let meta = conf.with(
+  // CLC 分类号
   class: "",
+  // Number 编号
   serialnumber: "",
+  // UDC
   udc: "",
+  // 密级 only for the Chinese template
   confidence: "",
+  // Available for reference, only for the English template
+  // 中文版不用管
+  available_for_reference: true,
   author: "San Zhang",
   studentid: "12010000",
   title: "Undergraduate Thesis Template",
