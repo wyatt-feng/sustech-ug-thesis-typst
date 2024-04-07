@@ -241,7 +241,7 @@
   doc,
 ) = {
   set page("a4",
-    margin: (x: 3.17cm, y: 2.54cm),
+    margin: (top: 2.5cm, bottom: 2cm, left: 3cm, right: 2.5cm),
     footer: locate(loc => {
       if skippedstate.at(loc) and calc.even(loc.page()) { return }
       [
