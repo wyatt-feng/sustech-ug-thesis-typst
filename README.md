@@ -17,12 +17,15 @@ this template and the formal guideline, and this template hasn't been test out, 
 - Run `typst compile thesis.typ --font-path resources/fonts` to compile the thesis
 - Alternatively, you can run `typst watch thesis.typ --font-path resources/fonts` to preview the result as you type
 
+Do **NOT** use it in the official Typst web app because it will take forever to load every time you open the document.
+
 ## TODO
 
 - ~Tables and images, including captions~
 - ~Footnotes~
 - ~Bibliography~
 - ~English version~
+- Upload to the official template repo
 
 ## Acknowledgement
 
